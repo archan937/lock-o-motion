@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require "rubygems"
+require "bundler"
+
+Bundler.require :gem_default, :gem_development
+
+puts "Loading LockOMotion development environment (#{LockOMotion::VERSION})"
+Pry.start
