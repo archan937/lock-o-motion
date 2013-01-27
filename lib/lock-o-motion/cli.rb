@@ -1,3 +1,4 @@
+require "pry"
 require "thor"
 require "rich/support/core/string/colorize"
 require "lock-o-motion"
@@ -15,8 +16,9 @@ module LockOMotion
       LockOMotion.configure
     end
 
+    desc "console", "Start Pry console with LockOMotion required gems"
     def console
-      Bundler.require :defautl, :lotion
+      Bundler.require :default, :lotion
       puts "Loading LockOMotion development environment"
       Pry.start
     end
