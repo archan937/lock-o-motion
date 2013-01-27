@@ -13,7 +13,7 @@ module LockOMotion
       yield self if block_given?
       motion_app.files.push File.expand_path("lotion.rb") if File.exists?("lotion.rb")
       write_lotion
-      motion_app.files.unshift File.expand_path("../../motion/object.rb", __FILE__)
+      motion_app.files.unshift File.expand_path("../../motion/core_ext.rb", __FILE__)
       motion_app.files.unshift File.expand_path("../../motion/lotion.rb", __FILE__)
       motion_app.files.unshift File.expand_path(".lotion.rb")
     end
