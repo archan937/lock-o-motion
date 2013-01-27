@@ -1,26 +1,39 @@
 require "fileutils"
+require "yaml"
+
+require "lock-o-motion/app"
 require "lock-o-motion/version"
 
 module LockOMotion
   extend self
 
-  def install
-    `bundle install --path vendor/motion/tmp --without default development test && bundle install --system --without ''`
-    Dir["vendor/motion/tmp/ruby/*/gems/*"].each do |dir|
-      FileUtils.mv dir, "vendor/motion" unless File.exists?("#{dir}/lib/motion")
+  class Error < StandardError; end
+
+  CONFIG = "lotion"
+  GEMS_DIR = ".lotion"
+
+  def configure
+    FileUtils.rm CONFIG if File.exists?(CONFIG)
+    FileUtils.rm_rf GEMS_DIR if File.exists?(GEMS_DIR)
+    `bundle install --path #{GEMS_DIR} --without default development test`
+    `bundle install --without '' --system`
+    File.open(CONFIG, "w") do |config|
+      config << {
+        :gems => Dir["#{GEMS_DIR}/ruby/*/gems/*"].collect{|x| x.gsub(/.*\//, "")}
+      }.to_yaml
     end
-    FileUtils.rm_rf "vendor/motion/tmp"
+    FileUtils.rm_rf GEMS_DIR
   end
 
-  def setup
-    unless defined?(Motion::Project::Config)
-      raise "This file must be required within a RubyMotion project Rakefile."
-    end
+  def setup(&block)
+    Bundler.require :lotion
     Motion::Project::App.setup do |app|
-      Dir["vendor/motion/*/lib/**/*.rb"].each do |file|
-        app.files.unshift(file).uniq!
-      end
+      LockOMotion::App.new(app).setup &block
     end
   end
 
+end
+
+unless defined?(Lotion)
+  Lotion = LockOMotion
 end
