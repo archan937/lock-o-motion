@@ -19,7 +19,7 @@ module LockOMotion
     `bundle install --without '' --system`
     File.open(CONFIG, "w") do |config|
       config << {
-        :gems => Dir["#{GEMS_DIR}/ruby/*/gems/*"].collect{|x| x.gsub(/.*\//, "")}
+        "gems" => Dir["#{GEMS_DIR}/ruby/*/gems/*"].collect{|x| x.gsub(/.*\//, "")}
       }.to_yaml
     end
     FileUtils.rm_rf GEMS_DIR

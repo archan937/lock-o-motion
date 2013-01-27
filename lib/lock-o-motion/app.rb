@@ -31,7 +31,7 @@ module LockOMotion
 
     def gem_files
       [].tap do |gem_files|
-        YAML.load_file(CONFIG)[:gems].each do |ruby_gem|
+        YAML.load_file(CONFIG)["gems"].each do |ruby_gem|
           if dir = $:.detect{|load_path| load_path.match /#{ruby_gem}\/lib$/}
             gem_files.concat Dir["#{dir}/**/*.rb"]
           else
