@@ -1,64 +1,47 @@
 module LockOMotion
   class App
-    attr_reader :motion_app
-
-    LOTION = ".lotion.rb"
-
-    def initialize(motion_app)
-      @motion_app = motion_app
-    end
 
     def setup
-      motion_app.files.concat gem_files
-      yield self if block_given?
-      motion_app.files.push File.expand_path("lotion.rb") if File.exists?("lotion.rb")
-      write_lotion
-      motion_app.files.unshift File.expand_path(".lotion.rb")
-      motion_app.files.unshift File.expand_path("../../motion/lotion.rb", __FILE__)
-      motion_app.files.unshift File.expand_path("../../motion/core_ext.rb", __FILE__)
-    end
-
-    def require(path)
-      absolute_path = nil
-      if $:.detect{|x| File.exists?(absolute_path = "#{x}/#{path.gsub(/\.rb$/, "")}.rb")}
-        motion_app.files.push absolute_path
-      else
-        raise Error, "Could not resolve #{path} for requirement"
+      Motion::Project::App.setup do |app|
+        dependencies = catch_file_dependencies do
+          Bundler.require :lotion
+        end
+        app.files.unshift File.expand_path("../../motion/core_ext.rb", __FILE__)
+        app.files.concat (dependencies.keys + dependencies.values).flatten.uniq.sort
+        app.files.push File.expand_path("lotion.rb") if File.exists?("lotion.rb")
+        app.files_dependencies dependencies
       end
     end
 
   private
 
-    def gem_files
-      [].tap do |gem_files|
-        YAML.load_file(CONFIG)["gems"].each do |ruby_gem|
-          if dir = $:.detect{|load_path| load_path.match /#{ruby_gem}\/lib$/}
-            gem_files.concat Dir["#{dir}/**/*.rb"]
-          else
-            raise Error, "Unable to setup #{ruby_gem}"
+    def catch_file_dependencies(&block)
+      Thread.current[:catched_file_dependencies] = {}
+
+      Object.class_eval do
+        def require_with_catch(path)
+          call = caller[0].match(/^(.*\.rb)/).captures[0]
+          file = "#{path.gsub(/\.rb$/, "")}.rb"
+          if dir = $:.detect{|x| File.exists?("#{x}/#{file}")}
+            (Thread.current[:catched_file_dependencies][call] ||= []) << "#{dir}/#{file}"
           end
+          require_without_catch path
         end
+        alias :require_without_catch :require
+        alias :require :require_with_catch
       end
-    end
 
-    def write_lotion
-      FileUtils.rm LOTION if File.exists?(LOTION)
-      File.open(LOTION, "w") do |file|
-        file << <<-RUBY_CODE
-module Lotion
-  LOAD_PATHS = [
-    #{to_ruby_code $:}
-  ]
-  REQUIRED = [
-    #{to_ruby_code motion_app.files}
-  ]
-end
-RUBY_CODE
+      block.call
+
+      Object.class_eval do
+        alias :require :require_without_catch
+        undef :require_with_catch
+        undef :require_without_catch
       end
-    end
 
-    def to_ruby_code(array)
-      array.collect{|x| File.expand_path(x).inspect}.join(",\n    ")
+      Thread.current[:catched_file_dependencies].tap do |dependencies|
+        Thread.current[:catched_file_dependencies] = nil
+      end
     end
 
   end

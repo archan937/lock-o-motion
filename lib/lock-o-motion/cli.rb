@@ -9,17 +9,11 @@ module LockOMotion
 
     class Error < StandardError; end
 
-    default_task :configure
-
-    desc "configure", "Create LockOMotion configuration file"
-    def configure
-      puts "Creating LockOMotion configuration file ...".yellow
-      LockOMotion.configure
-    end
+    default_task :console
 
     desc "console", "Start Pry console with LockOMotion required gems"
     def console
-      Bundler.require :lotion
+      Bundler.require :default, :lotion
       puts "Loading LockOMotion development environment"
       Pry.start
     end
