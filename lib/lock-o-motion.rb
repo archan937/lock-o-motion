@@ -1,3 +1,4 @@
+require "lock-o-motion/app"
 require "lock-o-motion/version"
 
 module LockOMotion
@@ -7,29 +8,28 @@ module LockOMotion
 
   def setup
     Motion::Project::App.setup do |app|
-      dependencies = catch_file_dependencies do
+      files_dependencies = catch_files_dependencies do
         Bundler.require :lotion
+        yield LockOMotion::App if block_given?
       end
-      app.files.unshift File.expand_path("../motion/core_ext.rb", __FILE__)
-      app.files.concat (dependencies.keys + dependencies.values).flatten.uniq.sort
-      app.files.push File.expand_path("lotion.rb") if File.exists?("lotion.rb")
-      app.files_dependencies dependencies
+      app.files.concat default_files + (files_dependencies.keys + files_dependencies.values).flatten.uniq.sort
+      app.files_dependencies files_dependencies
       write_lotion
     end
   end
 
 private
 
-  def catch_file_dependencies(&block)
+  def catch_files_dependencies(&block)
     Thread.current[:catched_file_dependencies] = {}
 
     Object.class_eval do
       def require_with_catch(path)
         if caller[0].match(/^(.*\.rb)/)
-          call = $1
+          call = $1 == File.expand_path("../lock-o-motion/app.rb", __FILE__) ? File.expand_path(LOTION) : $1
           file = "#{path.gsub(/\.rb$/, "")}.rb"
-          if dir = $:.detect{|x| File.exists?("#{x}/#{file}")}
-            (Thread.current[:catched_file_dependencies][call] ||= []) << "#{dir}/#{file}"
+          if load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
+            (Thread.current[:catched_file_dependencies][call] ||= []) << "#{load_path}/#{file}"
           end
         end
         require_without_catch path
@@ -49,6 +49,15 @@ private
     Thread.current[:catched_file_dependencies].tap do |dependencies|
       Thread.current[:catched_file_dependencies] = nil
     end
+  end
+
+  def default_files
+    [
+      File.expand_path("../motion/core_ext.rb", __FILE__),
+      File.expand_path("../motion/lotion.rb", __FILE__),
+      (File.expand_path("lotion.rb") if File.exists?("lotion.rb")),
+      File.expand_path(LOTION)
+    ].compact
   end
 
   def write_lotion

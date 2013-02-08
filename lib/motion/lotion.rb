@@ -12,7 +12,7 @@ private
       path
     else
       path = path.gsub(/\.rb.*$/, ".rb")
-      Lotion::LOAD_PATHS.each do |load_path|
+      LOAD_PATHS.each do |load_path|
         if File.exists?(absolute_path = "#{load_path}/#{path}")
           return absolute_path
         end
