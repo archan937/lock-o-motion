@@ -3,6 +3,8 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
+  LOTION = ".lotion.rb"
+
   def setup
     Motion::Project::App.setup do |app|
       dependencies = catch_file_dependencies do
@@ -12,6 +14,7 @@ module LockOMotion
       app.files.concat (dependencies.keys + dependencies.values).flatten.uniq.sort
       app.files.push File.expand_path("lotion.rb") if File.exists?("lotion.rb")
       app.files_dependencies dependencies
+      write_lotion
     end
   end
 
@@ -22,10 +25,12 @@ private
 
     Object.class_eval do
       def require_with_catch(path)
-        call = caller[0].match(/^(.*\.rb)/).captures[0]
-        file = "#{path.gsub(/\.rb$/, "")}.rb"
-        if dir = $:.detect{|x| File.exists?("#{x}/#{file}")}
-          (Thread.current[:catched_file_dependencies][call] ||= []) << "#{dir}/#{file}"
+        if caller[0].match(/^(.*\.rb)/)
+          call = $1
+          file = "#{path.gsub(/\.rb$/, "")}.rb"
+          if dir = $:.detect{|x| File.exists?("#{x}/#{file}")}
+            (Thread.current[:catched_file_dependencies][call] ||= []) << "#{dir}/#{file}"
+          end
         end
         require_without_catch path
       end
@@ -44,6 +49,26 @@ private
     Thread.current[:catched_file_dependencies].tap do |dependencies|
       Thread.current[:catched_file_dependencies] = nil
     end
+  end
+
+  def write_lotion
+    FileUtils.rm LOTION if File.exists?(LOTION)
+    File.open(LOTION, "w") do |file|
+      file << <<-RUBY_CODE.gsub("        ", "")
+        module Lotion
+          LOAD_PATHS = [
+            #{to_ruby_code $:}
+          ]
+          REQUIRED = [
+            #{to_ruby_code $"}
+          ]
+        end
+      RUBY_CODE
+    end
+  end
+
+  def to_ruby_code(array)
+    array.collect{|x| File.expand_path(x).inspect}.join(",\n    ")
   end
 
 end

@@ -1,11 +1,13 @@
 class Object
-  def require(path)
-    # do nothing
+  def require(*args, &block)
   end
 end
 
 class Class
-  def delegate(*args)
+  def class_eval(*args, &block)
+    Lotion.warn name, :class_eval, caller
+  end
+  def delegate(*args, &block)
     to = args.pop
     args.each do |method|
       send :define_method, method do |*args, &block|
