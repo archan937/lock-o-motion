@@ -1,16 +1,18 @@
-class Object
-
+module Kernel
   def require(*args, &block)
   end
-
 end
 
-class Class
-
+class Module
   def class_eval(*args, &block)
     Lotion.warn name, :class_eval, caller
   end
+  def module_eval(*args, &block)
+    Lotion.warn name, :module_eval, caller
+  end
+end
 
+class Class
   def delegate(*args, &block)
     to = args.pop
     args.each do |method|
@@ -19,5 +21,10 @@ class Class
       end
     end
   end
+end
 
+class Object
+  def instance_eval(*args, &block)
+    Lotion.warn self.class.name, :instance_eval, caller
+  end
 end
