@@ -23,7 +23,7 @@ module LockOMotion
   end
 
   def skipped?(path)
-    !!%w(pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
+    !!%w(openssl pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
       puts "   Warning Skipped '#{file}' requirement".yellow if file
     end
   end
@@ -73,7 +73,7 @@ private
     [
       File.expand_path("../motion/core_ext.rb", __FILE__),
       File.expand_path("../motion/lotion.rb", __FILE__),
-      (File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)),
+     (File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)),
       File.expand_path(GEM_LOTION)
     ].compact
   end
