@@ -1,8 +1,16 @@
 module Lotion
   extend self
 
-  def warn(object, method, caller)
-    puts "   Warning Called #{object}.#{method} from #{resolve caller[0]}".yellow
+  def warn(*args)
+    message = begin
+      if args.size == 1
+        args.first
+      else
+        object, method, caller = *args
+        "Called #{object}.#{method} from #{resolve caller[0]}"
+      end
+    end
+    puts "   Warning #{message}".yellow
   end
 
 private
