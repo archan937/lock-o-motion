@@ -2,7 +2,7 @@ module Lotion
   extend self
 
   def warn(object, method, caller)
-    puts "[warning] Called #{object}.#{method} from #{resolve caller[0]}"
+    puts "   Warning Called #{object}.#{method} from #{resolve caller[0]}".yellow
   end
 
 private

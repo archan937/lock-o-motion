@@ -10,6 +10,7 @@ module LockOMotion
     Motion::Project::App.setup do |app|
       files_dependencies = catch_files_dependencies do
         Bundler.require :lotion
+        LockOMotion::App.require "colorize"
         yield LockOMotion::App if block_given?
       end
       app.files.concat default_files + (files_dependencies.keys + files_dependencies.values).flatten.uniq.sort
