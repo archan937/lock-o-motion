@@ -71,22 +71,30 @@ private
     File.open(GEM_LOTION, "w") do |file|
       file << <<-RUBY_CODE.gsub("        ", "")
         module Lotion
-          LOAD_PATHS = [
-            #{pretty_enum $:}
-          ]
-          REQUIRED = [
-            #{pretty_enum $"}
-          ]
-          DEPENDENCIES = {
-            #{pretty_enum dependencies}
-          }
+          LOAD_PATHS = #{pretty_inspect $:, 2}
+          REQUIRED = #{pretty_inspect $", 2}
+          DEPENDENCIES = #{pretty_inspect dependencies, 2}
         end
       RUBY_CODE
     end
   end
 
-  def pretty_enum(enum)
-    enum.pretty_inspect.strip.to_s[1..-2].gsub("\n ", "\n    ").gsub("=>", " =>")
+  def pretty_inspect(object, indent = 0)
+    if object.is_a?(Array)
+      [
+        "[",
+        object.collect{|x| "  #{pretty_inspect x, indent + 2},"},
+        "]"
+      ].flatten.join "\n" + (" " * indent)
+    elsif object.is_a?(Hash)
+      [
+        "{",
+        object.collect{|k, v| "  #{k.inspect} => #{pretty_inspect v, indent + 2},"},
+        "}"
+      ].flatten.join "\n" + (" " * indent)
+    else
+      object.inspect
+    end
   end
 
 end
