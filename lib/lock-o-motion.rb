@@ -31,9 +31,7 @@ module LockOMotion
 private
 
   def catch_files_dependencies(&block)
-    Thread.current[:catched_files_dependencies] = {}
-
-    Kernel.instance_eval do
+    hook = proc do
       def require_with_catch(path, call = nil)
         return if LockOMotion.skipped?(path)
         hash = Thread.current[:catched_files_dependencies]
@@ -41,7 +39,7 @@ private
         if call || caller[0].match(/^(.*\.rb)/)
           call ||= $1
           file = "#{path.gsub(/\.rb$/, "")}.rb"
-          if !call.match(/\bbundler\b/) && load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
+          if !call.match(/\bbundler\b/) && (load_path = $:.detect{|x| File.exists?("#{x}/#{file}")})
             (hash[call] ||= []) << "#{load_path}/#{file}"
           end
         end
@@ -52,13 +50,19 @@ private
       alias :require :require_with_catch
     end
 
-    block.call
-
-    Kernel.instance_eval do
+    unhook = proc do
       alias :require :require_without_catch
       undef :require_with_catch
       undef :require_without_catch
     end
+
+    Thread.current[:catched_files_dependencies] = {}
+
+    Kernel.instance_eval &hook
+    Object.class_eval &hook
+    block.call
+    Kernel.instance_eval &unhook
+    Object.class_eval &unhook
 
     Thread.current[:catched_files_dependencies].tap do |dependencies|
       Thread.current[:catched_files_dependencies] = nil
