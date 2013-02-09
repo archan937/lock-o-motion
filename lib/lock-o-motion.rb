@@ -27,16 +27,13 @@ private
     Thread.current[:catched_files_dependencies] = {}
 
     Object.class_eval do
-      def require_with_catch(path)
+      def require_with_catch(path, call = nil)
         hash = Thread.current[:catched_files_dependencies]
 
-        if caller[0].match(/^(.*\.rb)/)
-          call = ($1 == APP_FILE ? File.expand_path(GEM_LOTION) : $1)
+        if call || caller[0].match(/^(.*\.rb)/)
+          call ||= $1
           file = "#{path.gsub(/\.rb$/, "")}.rb"
           if load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
-            if hash.empty? && File.exists?(USER_LOTION)
-              hash[File.expand_path(USER_LOTION)] = [call]
-            end
             (hash[call] ||= []) << "#{load_path}/#{file}"
           end
         end
