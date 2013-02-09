@@ -33,7 +33,7 @@ private
         if call || caller[0].match(/^(.*\.rb)/)
           call ||= $1
           file = "#{path.gsub(/\.rb$/, "")}.rb"
-          if load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
+          if !call.match(/\bbundler\b/) && load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
             (hash[call] ||= []) << "#{load_path}/#{file}"
           end
         end
