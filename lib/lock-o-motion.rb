@@ -26,7 +26,7 @@ private
   def catch_files_dependencies(&block)
     Thread.current[:catched_files_dependencies] = {}
 
-    Object.class_eval do
+    Kernel.instance_eval do
       def require_with_catch(path, call = nil)
         hash = Thread.current[:catched_files_dependencies]
 
@@ -46,7 +46,7 @@ private
 
     block.call
 
-    Object.class_eval do
+    Kernel.instance_eval do
       alias :require :require_without_catch
       undef :require_with_catch
       undef :require_without_catch

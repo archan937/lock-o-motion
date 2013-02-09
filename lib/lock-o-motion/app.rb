@@ -8,9 +8,9 @@ module LockOMotion
         call = File.expand_path(GEM_LOTION)
       end
       begin
-        Object.require path, call
+        Kernel.require path, call
       rescue LoadError
-        Object.require File.expand_path(path), call
+        Kernel.require File.expand_path(path), call
       end
     end
 
