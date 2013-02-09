@@ -89,17 +89,13 @@ private
 
   def pretty_inspect(object, indent = 0)
     if object.is_a?(Array)
-      [
-        "[",
-        object.collect{|x| "  #{pretty_inspect x, indent + 2},"},
-        "]"
-      ].flatten.join "\n" + (" " * indent)
+      entries = object.collect{|x| "  #{pretty_inspect x, indent + 2}"}
+      entries.each_with_index{|x, i| entries[i] = "#{x}," if i < entries.size - 1}
+      ["[", entries, "]"].flatten.join "\n" + (" " * indent)
     elsif object.is_a?(Hash)
-      [
-        "{",
-        object.collect{|k, v| "  #{k.inspect} => #{pretty_inspect v, indent + 2},"},
-        "}"
-      ].flatten.join "\n" + (" " * indent)
+      entries = object.collect{|k, v| "  #{k.inspect} => #{pretty_inspect v, indent + 2}"}
+      entries.each_with_index{|x, i| entries[i] = "#{x}," if i < entries.size - 1}
+      ["{", entries, "}"].flatten.join "\n" + (" " * indent)
     else
       object.inspect
     end
