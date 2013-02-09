@@ -1,3 +1,4 @@
+require "colorize"
 require "lock-o-motion/app"
 require "lock-o-motion/version"
 
@@ -21,6 +22,12 @@ module LockOMotion
     end
   end
 
+  def skipped?(path)
+    !!%w(pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
+      puts "   Warning Skipped '#{file}' requirement".yellow if file
+    end
+  end
+
 private
 
   def catch_files_dependencies(&block)
@@ -28,6 +35,7 @@ private
 
     Kernel.instance_eval do
       def require_with_catch(path, call = nil)
+        return if LockOMotion.skipped?(path)
         hash = Thread.current[:catched_files_dependencies]
 
         if call || caller[0].match(/^(.*\.rb)/)
