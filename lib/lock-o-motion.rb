@@ -17,7 +17,7 @@ module LockOMotion
       end
       app.files.concat default_files + (files_dependencies.keys + files_dependencies.values).flatten.uniq.sort
       app.files_dependencies files_dependencies
-      write_lotion
+      write_lotion files_dependencies
     end
   end
 
@@ -69,24 +69,27 @@ private
     ].compact
   end
 
-  def write_lotion
+  def write_lotion(dependencies)
     FileUtils.rm GEM_LOTION if File.exists?(GEM_LOTION)
     File.open(GEM_LOTION, "w") do |file|
       file << <<-RUBY_CODE.gsub("        ", "")
         module Lotion
           LOAD_PATHS = [
-            #{to_ruby_code $:}
+            #{pretty_enum $:}
           ]
           REQUIRED = [
-            #{to_ruby_code $"}
+            #{pretty_enum $"}
           ]
+          DEPENDENCIES = {
+            #{pretty_enum dependencies}
+          }
         end
       RUBY_CODE
     end
   end
 
-  def to_ruby_code(array)
-    array.collect{|x| File.expand_path(x).inspect}.join(",\n    ")
+  def pretty_enum(enum)
+    enum.pretty_inspect.strip.to_s[1..-2].gsub("\n ", "\n    ").gsub("=>", " =>")
   end
 
 end
