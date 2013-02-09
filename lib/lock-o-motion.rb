@@ -4,7 +4,9 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
-  LOTION = ".lotion.rb"
+  APP_FILE    = File.expand_path("../lock-o-motion/app.rb", __FILE__)
+  GEM_LOTION  = ".lotion.rb"
+  USER_LOTION = "lotion.rb"
 
   def setup
     Motion::Project::App.setup do |app|
@@ -22,17 +24,23 @@ module LockOMotion
 private
 
   def catch_files_dependencies(&block)
-    Thread.current[:catched_file_dependencies] = {}
+    Thread.current[:catched_files_dependencies] = {}
 
     Object.class_eval do
       def require_with_catch(path)
+        hash = Thread.current[:catched_files_dependencies]
+
         if caller[0].match(/^(.*\.rb)/)
-          call = $1 == File.expand_path("../lock-o-motion/app.rb", __FILE__) ? File.expand_path(LOTION) : $1
+          call = ($1 == APP_FILE ? File.expand_path(GEM_LOTION) : $1)
           file = "#{path.gsub(/\.rb$/, "")}.rb"
           if load_path = $:.detect{|x| File.exists?("#{x}/#{file}")}
-            (Thread.current[:catched_file_dependencies][call] ||= []) << "#{load_path}/#{file}"
+            if hash.empty? && File.exists?(USER_LOTION)
+              hash[File.expand_path(USER_LOTION)] = [call]
+            end
+            (hash[call] ||= []) << "#{load_path}/#{file}"
           end
         end
+
         require_without_catch path
       end
       alias :require_without_catch :require
@@ -47,8 +55,8 @@ private
       undef :require_without_catch
     end
 
-    Thread.current[:catched_file_dependencies].tap do |dependencies|
-      Thread.current[:catched_file_dependencies] = nil
+    Thread.current[:catched_files_dependencies].tap do |dependencies|
+      Thread.current[:catched_files_dependencies] = nil
     end
   end
 
@@ -56,14 +64,14 @@ private
     [
       File.expand_path("../motion/core_ext.rb", __FILE__),
       File.expand_path("../motion/lotion.rb", __FILE__),
-      (File.expand_path("lotion.rb") if File.exists?("lotion.rb")),
-      File.expand_path(LOTION)
+      (File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)),
+      File.expand_path(GEM_LOTION)
     ].compact
   end
 
   def write_lotion
-    FileUtils.rm LOTION if File.exists?(LOTION)
-    File.open(LOTION, "w") do |file|
+    FileUtils.rm GEM_LOTION if File.exists?(GEM_LOTION)
+    File.open(GEM_LOTION, "w") do |file|
       file << <<-RUBY_CODE.gsub("        ", "")
         module Lotion
           LOAD_PATHS = [
