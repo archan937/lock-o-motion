@@ -18,9 +18,12 @@ module LockOMotion
         LockOMotion::App.require "colorize"
         yield LockOMotion::App if block_given?
       end
-      app.files.concat default_files + (files_dependencies.keys + files_dependencies.values).flatten.uniq.sort
+
+      bundler_dependencies = files_dependencies.delete("BUNDLER") || []
+      app.files = (bundler_dependencies + app.files + default_files + (files_dependencies.keys + files_dependencies.values).flatten.sort).uniq
       app.files_dependencies files_dependencies
-      write_lotion app.files, app.dependencies
+
+      write_lotion app
     end
   end
 
@@ -40,8 +43,10 @@ private
 
         if call || caller[0].match(/^(.*\.rb)/)
           call ||= $1
+          call = "BUNDLER" if call.match(/\bbundler\b/)
           file = "#{path.gsub(/\.rb$/, "")}.rb"
-          if call != APP_FILE && !call.match(/\bbundler\b/) && (load_path = $:.detect{|x| File.exists?("#{x}/#{file}")})
+
+          if call != APP_FILE && (load_path = $:.detect{|x| File.exists?("#{x}/#{file}")})
             (hash[call] ||= []) << "#{load_path}/#{file}"
           end
         end
@@ -59,13 +64,13 @@ private
     end
 
     Thread.current[:catched_files_dependencies] = {}
-
     Kernel.instance_eval &hook
     Object.class_eval &hook
+
     block.call
+
     Kernel.instance_eval &unhook
     Object.class_eval &unhook
-
     Thread.current[:catched_files_dependencies].tap do |dependencies|
       Thread.current[:catched_files_dependencies] = nil
     end
@@ -80,15 +85,15 @@ private
     ].compact
   end
 
-  def write_lotion(files, dependencies)
+  def write_lotion(app)
     FileUtils.rm GEM_LOTION if File.exists?(GEM_LOTION)
     File.open(GEM_LOTION, "w") do |file|
       file << <<-RUBY_CODE.gsub("        ", "")
         module Lotion
           LOAD_PATHS = #{pretty_inspect $:, 2}
           REQUIRED = #{pretty_inspect $", 2}
-          FILES = #{pretty_inspect files, 2}
-          DEPENDENCIES = #{pretty_inspect dependencies, 2}
+          FILES = #{pretty_inspect app.files, 2}
+          DEPENDENCIES = #{pretty_inspect app.dependencies, 2}
         end
       RUBY_CODE
     end

@@ -1,6 +1,14 @@
 module Lotion
   extend self
 
+  def require(path)
+    if resolve(path)
+      puts "   Warning Please add `app.require \"#{path}\"` within Lotion.setup".yellow
+    else
+      raise LoadError, "cannot load such file -- #{path}"
+    end
+  end
+
   def warn(*args)
     message = begin
       if args.size == 1
