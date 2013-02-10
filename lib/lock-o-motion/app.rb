@@ -12,21 +12,23 @@ module LockOMotion
       @app = app
     end
 
-    def require(path)
-      Kernel.require path
+    def require(path, internal = false)
+      Kernel.require path, internal
     end
 
     def ignore_require(path)
       @ignored_requires << path
     end
 
-    def dependency(call, path)
+    def dependency(call, path, internal = false)
       call = "BUNDLER" if call.match(/\bbundler\b/)
-      call = "CUSTOM"  if call == __FILE__
+      if call == __FILE__
+        call = internal ? "GEM_LOTION" : "USER_LOTION"
+      end
 
       ($: + LockOMotion.gem_paths).each do |load_path|
-        if File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
-           File.exists?(absolute_path = "#{load_path}/#{path}.bundle")
+        if File.exists?(absolute_path = "#{load_path}/#{path}.bundle") ||
+           File.exists?(absolute_path = "#{load_path}/#{path}.rb")
           if absolute_path.match(/\.rb$/)
             (@dependencies[call] ||= []) << absolute_path
             $:.unshift load_path unless $:.include?(load_path)
@@ -52,7 +54,7 @@ module LockOMotion
       Object.class_eval &hook
 
       Bundler.require :lotion
-      require "colorize"
+      require "colorize", true
       yield self if block_given?
 
       Kernel.instance_eval &unhook
@@ -60,12 +62,20 @@ module LockOMotion
       Thread.current[:lotion_app] = nil
 
       bundler = @dependencies.delete("BUNDLER") || []
-      custom  = @dependencies.delete("CUSTOM")  || []
-      (bundler + custom).each do |file|
-        (@dependencies[file] ||= []).concat default_files
+      gem_lotion = @dependencies.delete("GEM_LOTION") || []
+      user_lotion = @dependencies.delete("USER_LOTION") || []
+
+      gem_lotion.each do |file|
+        default_files.each do |default_file|
+          (@dependencies[default_file] ||= []) << file
+        end
+      end
+      (bundler + user_lotion).each do |file|
+        @dependencies[file] ||= []
+        @dependencies[file] = default_files + @dependencies[file]
       end
 
-      @files = (default_files + bundler.sort + (@dependencies.keys + @dependencies.values).flatten.sort + custom.sort + @app.files).uniq
+      @files = (default_files + gem_lotion.sort + bundler.sort + (@dependencies.keys + @dependencies.values).flatten.sort + user_lotion.sort + @app.files).uniq
       @files << File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)
 
       @app.files = @files
@@ -75,10 +85,10 @@ module LockOMotion
 
     def hook
       @hook ||= proc do
-        def require_with_catch(path)
+        def require_with_catch(path, internal = false)
           return if LockOMotion.skip?(path)
           if caller[0].match(/^(.*\.rb)\b/)
-            Thread.current[:lotion_app].dependency $1, path
+            Thread.current[:lotion_app].dependency $1, path, internal
           end
           begin
             require_without_catch path

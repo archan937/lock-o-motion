@@ -4,7 +4,7 @@ module Motion
 
       def files_dependencies(deps_hash)
         res_path = lambda do |x|
-          path = /^\.?\//.match(x) ? x : File.join('.', x)
+          path = /^\.?\//.match(x) ? x : File.join(".", x)
           unless @files.flatten.include?(path)
             App.fail "Can't resolve dependency `#{x}'"
           end

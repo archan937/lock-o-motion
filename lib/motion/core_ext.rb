@@ -1,6 +1,6 @@
 module Kernel
   def require(*args, &block)
-    Lotion.require args.first
+    Lotion.require args.first, caller
   end
 end
 
@@ -26,7 +26,7 @@ end
 
 class Object
   def require(*args, &block)
-    Lotion.require args.first
+    Lotion.require args.first, caller
   end
   def instance_eval(*args, &block)
     Lotion.warn self.class.name, :instance_eval, caller
