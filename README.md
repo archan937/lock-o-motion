@@ -59,13 +59,223 @@ Add `Lotion.setup` at the end of your `Rakefile`:
 
 Run `bundle install` if you haven't already and then `rake` to run the application in your iOS-simulator. Voila! You're done ^^
 
+### Auto-generated `.lotion.rb`
+
+LockOMotion generates a hidden Ruby file called `.lotion.rb` in which the following constants are defined:
+
+* `FILES` - All Ruby sources registered with `Motion::Project::App.files`
+* `DEPENDENCIES` - All file dependencies registered with `Motion::Project::App.files_dependencies`
+* `IGNORED_REQUIRES` - Ignored file requires (declared in `Lotion.setup`)
+* `LOAD_PATHS` - Available load paths after running `rake`
+* `GEM_PATHS` - Available gem paths (resembles `Gem.latest_load_paths`)
+* `REQUIRED` - All required files after running `rake`
+
+At runtime, LockOMotion uses `.lotion.rb` for resolving Ruby sources. This makes it possible the print warnings as specific as possible which makes debugging a little easier.
+
+#### Example
+
+Let us say your `Gemfile` looks like the following:
+
+    source "http://rubygems.org"
+
+    # RubyMotion awared gems
+    gem "lock-o-motion"
+
+    # RubyMotion unawared gems
+    group :lotion do
+      gem "slot_machine"
+    end
+
+A fragment of the generated `.lotion.rb` looks like this:
+
+    module Lotion
+      FILES = [
+        "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb",
+        "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb",
+        "/Users/paulengel/Sources/just_awesome/.lotion.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/slot.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/version.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/time_slot.rb",
+        "./app/app_delegate.rb",
+        "./app/controllers/awesome_controller.rb"
+      ]
+      DEPENDENCIES = {
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb" => [
+          "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb",
+          "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb",
+          "/Users/paulengel/Sources/just_awesome/.lotion.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/slot.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/version.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/time_slot.rb"
+        ],
+        "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb" => [
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
+        ],
+        "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb" => [
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
+        ],
+        "/Users/paulengel/Sources/just_awesome/.lotion.rb" => [
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
+        ]
+      }
+      IGNORED_REQUIRES = []
+      LOAD_PATHS = [
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib",
+        "/Users/paulengel/Sources/lock-o-motion/lib",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib",
+        "/Library/RubyMotion/lib",
+
 ### Warnings at runtime
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+As said before, you are not able to require sources at runtime and you cannot use "dynamic code execution" like `class_eval` or `instance_eval`. LockOMotion warns you about these kind of statements.
 
-### Using `Lotion.setup`
+#### Restricted method calls
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Using the same `Gemfile` as in the previous example. The console output would look something like this:
+
+    1.9.3 paulengel:just_awesome $ rake
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+       Warning Called `Slot.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
+       Warning Called `TimeSlot.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
+    (main) >
+
+You will need to solve this yourself e.g. by overriding the method for instance or by refactoring.
+
+#### Runtime requirements
+
+It is possible that a Ruby source file gets required later on at runtime. Such file requirements are not allowed. This is the case when using [MultiJSON](https://github.com/intridea/multi_json). Using the following `Gemfile`:
+
+    source "http://rubygems.org"
+
+    # RubyMotion awared gems
+    gem "lock-o-motion"
+
+    # RubyMotion unawared gems
+    group :lotion do
+      gem "multi_json"
+    end
+
+You will get the following console output:
+
+    1.9.3 paulengel:just_awesome $ rake
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    (main)> 2013-02-10 18:27:40.813 Just Awesome[73896:c07] lotion.rb:17:in `require:': cannot load such file -- oj (LoadError)
+      from core_ext.rb:29:in `require:'
+      from multi_json.rb:33:in `block in default_adapter'
+      from multi_json.rb:31:in `default_adapter'
+      from multi_json.rb:49:in `adapter'
+      from multi_json.rb:108:in `current_adapter:'
+      from multi_json.rb:94:in `load:'
+      from awesome_controller.rb:11:in `viewDidLoad'
+      from app_delegate.rb:13:in `application:didFinishLaunchingWithOptions:'
+       Warning Called `require "yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+               Add within Lotion.setup block: app.require "yajl"
+       Warning Called `require "multi_json/adapters/yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+               Add within Lotion.setup block: app.require "multi_json/adapters/yajl"
+    2013-02-10 18:27:40.981 Just Awesome[73896:c07] multi_json.rb:75:in `load_adapter:': uninitialized constant MultiJson::Adapters (NameError)
+      from multi_json.rb:65:in `use:'
+      from multi_json.rb:49:in `adapter'
+
+When applicable, you will get a warning about it. Here is the fragment of the warning:
+
+       Warning Called `require "yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+               Add within Lotion.setup block: app.require "yajl"
+       Warning Called `require "multi_json/adapters/yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+               Add within Lotion.setup block: app.require "multi_json/adapters/yajl"
+
+The following section contains further information about how to correct this.
+
+### Extending `Lotion.setup`
+
+You can require additional Ruby sources using `Lotion.setup`. To correct the earlier require warnings, declare the setup as follows:
+
+    Lotion.setup do |app|
+      app.require "yajl"
+      app.require "multi_json/adapters/yajl"
+    end
+
+### Requirement of `.bundle` files
+
+As far as I know, you are not able to require `.bundle` files within a RubyMotion application. After adding the require statement within `Lotion.setup`, you will get the following warning:
+
+    1.9.3 paulengel:just_awesome $ rake
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/yajl-ruby-1.1.0/lib/yajl.rb
+               requires /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/yajl-ruby-1.1.0/lib/yajl/yajl.bundle
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Info.plist
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/PkgInfo
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    (main)> 2013-02-10 18:40:02.534 Just Awesome[74192:c07] uninitialized constant Yajl (NameError)
+
+You can to try [mocking Ruby gems](https://github.com/archan937/lock-o-motion#mocking-ruby-gems) with drop-in replacements.
+
+### Adding `lotion.rb`
+
+LockOMotion provides a possibility to run Ruby code at startup. You can think of it as a Rails initializer. Just add a file called `lotion.rb` within the root directory of your RubyMotion application.
+
+Let's say the path of your RubyMotion is `/Users/paulengel/Sources/just_awesome`. Create a file as `/Users/paulengel/Sources/just_awesome/lotion.rb`. When containing the following:
+
+    puts "Hello, I am `lotion.rb`"
+    puts SlotMachine.class
+
+The output will be as follows:
+
+    1.9.3 paulengel:just_awesome $ rake
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+       Compile ./app/controllers/awesome_controller.rb
+       Compile /Users/paulengel/Sources/just_awesome/lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Info.plist
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/PkgInfo
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    (main)>    Warning Called `Slot.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
+       Warning Called `TimeSlot.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
+    Hello, I am `lotion.rb`
+    Module
+    (main)>
+
+### Mocking Ruby gems
+
+LockOMotion is able to mock `HTTParty` with `BubbleWrap::HTTP`. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+### Skipped requirements
+
+There are a few Ruby file sources that LockOMotion refuses to require:
+
+* `pry`
+* `openssl`
+
+At the moment, you will have to find a replacement yourself.
+
+## Closing words
+
+With LockOMotion, I have tried to lower the threshold for using more Ruby gems within RubyMotion applications. Contributions are very much welcome. Please spread the word about `LockOMotion` when you like it! ^^
 
 ## Contact me
 
