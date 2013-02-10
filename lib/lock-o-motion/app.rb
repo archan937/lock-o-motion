@@ -24,7 +24,7 @@ module LockOMotion
       call = "BUNDLER" if call.match(/\bbundler\b/)
       call = "CUSTOM"  if call == __FILE__
 
-      ($: + LockOMotion.latest_load_paths).each do |load_path|
+      ($: + LockOMotion.gem_paths).each do |load_path|
         if File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
            File.exists?(absolute_path = "#{load_path}/#{path}.bundle")
           if absolute_path.match(/\.rb$/)
@@ -83,8 +83,8 @@ module LockOMotion
           begin
             require_without_catch path
           rescue LoadError
-            if load_path = LockOMotion.latest_load_paths.detect{|x| File.exists? "#{x}/#{path}"}
-              $:.unshift load_path
+            if gem_path = LockOMotion.gem_paths.detect{|x| File.exists? "#{x}/#{path}"}
+              $:.unshift gem_path
               require_without_catch path
             end
           end
@@ -115,12 +115,12 @@ module LockOMotion
       File.open(GEM_LOTION, "w") do |file|
         file << <<-RUBY_CODE.gsub("          ", "")
           module Lotion
-            GEM_PATHS = #{pretty_inspect LockOMotion.latest_load_paths, 2}
-            LOAD_PATHS = #{pretty_inspect $:, 2}
-            REQUIRED = #{pretty_inspect $", 2}
             FILES = #{pretty_inspect @files, 2}
             DEPENDENCIES = #{pretty_inspect @dependencies, 2}
             IGNORED_REQUIRES = #{pretty_inspect @ignored_requires, 2}
+            LOAD_PATHS = #{pretty_inspect $:, 2}
+            GEM_PATHS = #{pretty_inspect LockOMotion.gem_paths, 2}
+            REQUIRED = #{pretty_inspect $", 2}
           end
         RUBY_CODE
       end
