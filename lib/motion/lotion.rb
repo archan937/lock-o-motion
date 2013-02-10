@@ -36,10 +36,10 @@ private
     if path.match /^\//
       path
     else
-      path = path.gsub(/\.rb.*$/, "") + ".rb"
-      (GEM_PATHS + LOAD_PATHS).each do |load_path|
-        if File.exists?(absolute_path = "#{load_path}/#{path}")
-          return absolute_path
+      (LOAD_PATHS + GEM_PATHS).each do |load_path|
+        if File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
+           File.exists?(absolute_path = "#{load_path}/#{path}.bundle")
+          return (absolute_path if absolute_path.match(/\.rb$/))
         end
       end
       nil

@@ -23,17 +23,21 @@ module LockOMotion
     def dependency(call, path)
       call = "BUNDLER" if call.match(/\bbundler\b/)
       call = "CUSTOM"  if call == __FILE__
-      path = "#{path.gsub(/\.rb$/, "")}.rb"
 
       ($: + LockOMotion.latest_load_paths).each do |load_path|
-        if File.exists?(absolute_path = "#{load_path}/#{path}")
-          (@dependencies[call] ||= []) << absolute_path
-          $:.unshift load_path unless $:.include?(load_path)
+        if File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
+           File.exists?(absolute_path = "#{load_path}/#{path}.bundle")
+          if absolute_path.match(/\.rb$/)
+            (@dependencies[call] ||= []) << absolute_path
+            $:.unshift load_path unless $:.include?(load_path)
+          else
+            puts "   Warning #{call}\n           requires #{absolute_path}".red
+          end
           return
         end
       end
 
-      puts "   Warning Could not resolve dependency \"#{path}\"".yellow
+      puts "   Warning Could not resolve dependency \"#{path}\"".red
     end
 
   private
@@ -73,7 +77,7 @@ module LockOMotion
       @hook ||= proc do
         def require_with_catch(path)
           return if LockOMotion.skip?(path)
-          if caller[0].match(/^(.*\.rb)/)
+          if caller[0].match(/^(.*\.rb)\b/)
             Thread.current[:lotion_app].dependency $1, path
           end
           begin
