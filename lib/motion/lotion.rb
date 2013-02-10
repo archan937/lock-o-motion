@@ -2,8 +2,13 @@ module Lotion
   extend self
 
   def require(path)
-    if resolve(path)
-      puts "   Warning Please add `app.require \"#{path}\"` within Lotion.setup".yellow
+    return if required.include? path
+    required << path
+
+    if absolute_path = resolve(path)
+      unless (IGNORED_REQUIRES + REQUIRED).include?(absolute_path)
+        puts "   Warning Add the following with Lotion.setup block: app.require \"#{path}\"".yellow
+      end
     else
       raise LoadError, "cannot load such file -- #{path}"
     end
@@ -23,12 +28,16 @@ module Lotion
 
 private
 
+  def required
+    @required ||= []
+  end
+
   def resolve(path)
     if path.match /^\//
       path
     else
       path = path.gsub(/\.rb.*$/, "") + ".rb"
-      LOAD_PATHS.each do |load_path|
+      (GEM_PATHS + LOAD_PATHS).each do |load_path|
         if File.exists?(absolute_path = "#{load_path}/#{path}")
           return absolute_path
         end
