@@ -30,7 +30,7 @@ module LockOMotion
         if File.exists?(absolute_path = "#{load_path}/#{path}.bundle") ||
            File.exists?(absolute_path = "#{load_path}/#{path}.rb")
           if absolute_path.match(/\.rb$/)
-            (@dependencies[call] ||= []) << absolute_path
+            register_dependency call, absolute_path
             $:.unshift load_path unless $:.include?(load_path)
           else
             puts "   Warning #{call}\n           requires #{absolute_path}".red
@@ -39,10 +39,18 @@ module LockOMotion
         end
       end
 
-      puts "   Warning Could not resolve dependency \"#{path}\"".red
+      if path.match(/^\//) && File.exists?(path)
+        register_dependency call, path
+      else
+        puts "   Warning Could not resolve dependency \"#{path}\"".red
+      end
     end
 
   private
+
+    def register_dependency(call, absolute_path)
+      ((@dependencies[call] ||= []) << absolute_path).uniq!
+    end
 
     def setup(&block)
       @files = []
@@ -87,6 +95,10 @@ module LockOMotion
       @hook ||= proc do
         def require_with_catch(path, internal = false)
           return if LockOMotion.skip?(path)
+          if mock_path = LockOMotion.mock_path(path)
+            path = mock_path
+            internal = false
+          end
           if caller[0].match(/^(.*\.rb)\b/)
             Thread.current[:lotion_app].dependency $1, path, internal
           end

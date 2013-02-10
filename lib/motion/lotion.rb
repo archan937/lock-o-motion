@@ -8,7 +8,7 @@ module Lotion
     if absolute_path = resolve(path)
       unless (IGNORED_REQUIRES + REQUIRED).include?(absolute_path)
         warn [
-          "Called `require \"#{path}\"` from #{derive_caller caller}",
+          "Called `require \"#{path}\"` from",
           derive_caller(caller),
           "Add within Lotion.setup block: ".yellow + "app.require \"#{path}\"".green
         ].join("\n")
@@ -33,6 +33,7 @@ module Lotion
 private
 
   def derive_caller(caller)
+    return "<unknown path>" if caller.empty?
     file, line = *caller[0].match(/^(.*\.rb):(\d+)/).captures
     "#{resolve file}:#{line}"
   end

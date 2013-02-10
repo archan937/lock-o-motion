@@ -7,6 +7,8 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
+  MOCKS_DIR = File.expand_path("../lock-o-motion/mocks", __FILE__)
+
   class GemPath
     attr_reader :name, :version, :path, :version_numbers
     include Comparable
@@ -43,6 +45,13 @@ module LockOMotion
   def skip?(path)
     !!%w(openssl pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
       puts "   Warning Skipped '#{file}' requirement".yellow if file
+    end
+  end
+
+  def mock_path(path)
+    path = path.gsub(/\.rb$/, "")
+    if File.exists?("#{MOCKS_DIR}/#{path}.rb")
+      "lock-o-motion/mocks/#{path}"
     end
   end
 
