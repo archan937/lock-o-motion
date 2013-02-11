@@ -8,9 +8,9 @@ Require RubyGems (including their dependencies) within RubyMotion Apps
 
 One of the limitations is that you are not able to use any random Ruby gem you want. It either has to be RubyMotion aware (like [BubbleWrap](https://github.com/rubymotion/BubbleWrap)) or RubyMotion compatible (mostly when having as minimal gem dependencies as possible and without doing things like class and instance evaluation). You are not able to require files at runtime, but that is where `LockOMotion` hooks in as it handles requirements for you.
 
-Please note that although it is a valuable asset, using LockOMotion will still not let you include any random Ruby gem. It does bring us a few steps closer towards that point.
+Please note that although it is a valuable asset, using LockOMotion will still not let you include any random Ruby gem. But it does bring us a few steps closer towards that point.
 
-A possible strategy is to "mock" common Ruby gems (e.g. `yaml` or [httparty](https://github.com/jnunemaker/httparty)) using (semi) drop-in replacements which are hooked in using LockOMotion. Why do we have to eliminate Ruby gems because they use one or a few methods of a "blocking" Ruby dependency gem like `YAML.load`? Well, I very very well know that this is no more worth than a half solutation but it's more than nothing.
+A possible strategy is to "mock" common Ruby gems (e.g. `yaml` or [HTTParty](https://github.com/jnunemaker/httparty)) using (semi) drop-in replacements which are hooked in using LockOMotion. Cause why do we have to eliminate Ruby gems because they use one or a few methods of a "blocking" Ruby dependency gem like `YAML.load`? Anyway, I very very well know that this is no more worth than a half solutation but it's more than nothing.
 
 ## Installation
 
@@ -262,11 +262,73 @@ The output will be as follows:
 
 ### Mocking Ruby gems
 
-LockOMotion is able to mock `HTTParty` with `BubbleWrap::HTTP`. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+LockOMotion is able to mock `HTTParty` regarding its core functionality (e.g. GET, POST, PUT, DELETE requests, HTTP Basic Auth). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore for using the gem within a RubyMotion application.
+
+As opposed to not having the `HTTParty` to our availability ...
+
+##### Gemfile
+
+    source "http://rubygems.org"
+
+    # RubyMotion aware gems
+    gem "lock-o-motion", :path => "/Users/paulengel/Sources/lock-o-motion"
+
+    # RubyMotion unaware gems
+    group :lotion do
+      gem "httparty"
+    end
+
+##### Console output
+
+    1.9.3 paulengel:just_awesome $ rake
+       Warning Could not resolve dependency "socket.so"
+       Warning /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/net/http.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/zlib.bundle
+       Warning /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/net/http.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/stringio.bundle
+       Warning Skipped 'openssl' requirement
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/httparty-0.10.1/lib/httparty.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/zlib.bundle
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.2/lib/multi_xml.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/bigdecimal.bundle
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.2/lib/multi_xml.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/stringio.bundle
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/httparty-0.10.1/lib/httparty/net_digest_auth.rb
+               requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/digest/md5.bundle
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    2013-02-11 01:06:52.671 Just Awesome[95675:c07] lotion.rb:17:in `require:': cannot load such file -- pathname.so (LoadError)
+      from core_ext.rb:29:in `require:'
+
+We are able to leave the `Gemfile` as is and get a console output like this:
+
+    1.9.3 paulengel:just_awesome $ rake
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+       Compile ./app/controllers/awesome_controller.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    (main)>
+
+
+    <!DOCTYPE html>
+    <html>
+      <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# githubog: http://ogp.me/ns/fb/githubog#">
+        <meta charset='utf-8'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title>archan937/lock-o-motion · GitHub</title>
+        <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub" />
+        <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub" />
+
+Cool, huh? I am planning on writing more "mocks" for common Ruby gems. And as already mentioned, I am very well aware of this not being a waterproof solution, but it helps us staying on track.
 
 ### Skipped requirements
 
-There are a few Ruby file sources that LockOMotion refuses to require:
+There are a few Ruby file sources that LockOMotion will refuse to require:
 
 * `pry`
 * `openssl`
