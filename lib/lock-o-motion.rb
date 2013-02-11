@@ -7,8 +7,8 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
-  GEM_MOCKS  = File.expand_path("../lock-o-motion/mocks", __FILE__)
   USER_MOCKS = File.expand_path("./mocks")
+  GEM_MOCKS  = File.expand_path("../lock-o-motion/mocks", __FILE__)
 
   class GemPath
     attr_reader :name, :version, :path, :version_numbers

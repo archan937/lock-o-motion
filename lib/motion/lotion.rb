@@ -46,7 +46,7 @@ private
     if path.match /^\//
       path
     else
-      (LOAD_PATHS + GEM_PATHS).each do |load_path|
+      ([USER_MOCKS, GEM_MOCKS] + LOAD_PATHS + GEM_PATHS).each do |load_path|
         if File.exists?(absolute_path = "#{load_path}/#{path}.bundle") ||
            File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
            File.exists?(absolute_path = "#{load_path}/#{path}")
