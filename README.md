@@ -235,7 +235,9 @@ You can to try [mocking Ruby gems](https://github.com/archan937/lock-o-motion#mo
 
 LockOMotion provides a possibility to run Ruby code at startup. You can think of it as a Rails initializer. Just add a file called `lotion.rb` within the root directory of your RubyMotion application.
 
-Let's say the path of your RubyMotion is `/Users/paulengel/Sources/just_awesome`. Create a file as `/Users/paulengel/Sources/just_awesome/lotion.rb`. When containing the following:
+Let's say the root directory of your RubyMotion application is `/Users/paulengel/Sources/just_awesome`. Create a file at `/Users/paulengel/Sources/just_awesome/lotion.rb`.
+
+And when containing the following Ruby code:
 
     puts "Hello, I am `lotion.rb`"
     puts SlotMachine.class
@@ -262,9 +264,9 @@ The output will be as follows:
 
 ### Mocking Ruby gems
 
-LockOMotion is able to mock `HTTParty` regarding its core functionality (e.g. GET, POST, PUT, DELETE requests, HTTP Basic Auth). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore for using the gem within a RubyMotion application.
+LockOMotion is able to mock `HTTParty` regarding its core functionality (e.g. GET, POST, PUT, DELETE requests, HTTP Basic Auth). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore when it comes to using the gem within a RubyMotion application.
 
-As opposed to not having the `HTTParty` to our availability ...
+As opposed to not having the `HTTParty` to our availability:
 
 ##### Gemfile
 
@@ -324,7 +326,11 @@ We are able to leave the `Gemfile` as is and get a console output like this:
         <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub" />
         <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub" />
 
-Cool, huh? I am planning on writing more "mocks" for common Ruby gems. And as already mentioned, I am very well aware of this not being a waterproof solution, but it helps us staying on track.
+I am planning on writing more "mocks" for common Ruby gems. But aside from mocks being defined within the LockOMotion gem sources, you can also define your own mocks within your RubyMotion application. Just add a directory called `mocks` within the root directory of the application and put the "mock sources" in it. The relative path of the mock source within that directory ensures a certain Ruby gem being mocked at compile time.
+
+Let's say the root directory of your RubyMotion application is `/Users/paulengel/Sources/just_awesome`. If you want to mock `require "httparty"`, create a file at `/Users/paulengel/Sources/just_awesome/mocks/httparty.rb` containing the mock code. If you want to mock `require "net/http"`, create a file at `/Users/paulengel/Sources/just_awesome/mocks/net/http.rb`. Cool, huh?
+
+As already mentioned within the introduction, I am very well aware of this not being a waterproof solution, but it helps us getting on track.
 
 ### Skipped requirements
 

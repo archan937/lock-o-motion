@@ -7,7 +7,8 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
-  MOCKS_DIR = File.expand_path("../lock-o-motion/mocks", __FILE__)
+  GEM_MOCKS  = File.expand_path("../lock-o-motion/mocks", __FILE__)
+  USER_MOCKS = File.expand_path("./mocks")
 
   class GemPath
     attr_reader :name, :version, :path, :version_numbers
@@ -50,7 +51,9 @@ module LockOMotion
 
   def mock_path(path)
     path = path.gsub(/\.rb$/, "")
-    if File.exists?("#{MOCKS_DIR}/#{path}.rb")
+    if File.exists?("#{USER_MOCKS}/#{path}.rb")
+      File.expand_path "./mocks/#{path}.rb"
+    elsif File.exists?("#{GEM_MOCKS}/#{path}.rb")
       "lock-o-motion/mocks/#{path}"
     end
   end
