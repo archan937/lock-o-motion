@@ -264,7 +264,7 @@ The output will be as follows:
 
 ### Mocking Ruby gems
 
-LockOMotion is able to mock `HTTParty` regarding its core functionality (e.g. GET, POST, PUT, DELETE requests, HTTP Basic Auth). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore when it comes to using the gem within a RubyMotion application.
+LockOMotion is able to mock some of the `HTTParty` core methods (GET, POST, PUT, DELETE requests and HTTP Basic Authentication). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore when it comes to using the gem within a RubyMotion application.
 
 As opposed to not having the `HTTParty` to our availability:
 
