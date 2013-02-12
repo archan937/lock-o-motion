@@ -1,6 +1,6 @@
 # LockOMotion
 
-Require RubyGems (including their dependencies) within RubyMotion Apps
+Require and mock Ruby gems (including their dependencies) within RubyMotion applications
 
 ## Introduction
 
@@ -66,6 +66,8 @@ LockOMotion generates a hidden Ruby file called `.lotion.rb` in which the follow
 * `FILES` - All Ruby sources registered with `Motion::Project::App.files`
 * `DEPENDENCIES` - All file dependencies registered with `Motion::Project::App.files_dependencies`
 * `IGNORED_REQUIRES` - Ignored file requires (declared in `Lotion.setup`)
+* `USER_MOCKS` - The directory in which user defined mock gems are located
+* `GEM_MOCKS` - The directory in which LockOMotion mock gems are located
 * `LOAD_PATHS` - Available load paths after running `rake`
 * `GEM_PATHS` - Available gem paths (resembles `Gem.latest_load_paths`)
 * `REQUIRED` - All required files after running `rake`
@@ -90,8 +92,8 @@ A fragment of the generated `.lotion.rb` looks like this:
 
     module Lotion
       FILES = [
-        "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb",
-        "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb",
         "/Users/paulengel/Sources/just_awesome/.lotion.rb",
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb",
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb",
@@ -104,18 +106,18 @@ A fragment of the generated `.lotion.rb` looks like this:
       ]
       DEPENDENCIES = {
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb" => [
-          "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb",
-          "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb",
           "/Users/paulengel/Sources/just_awesome/.lotion.rb",
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/slot.rb",
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/version.rb",
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb",
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/time_slot.rb"
         ],
-        "/Users/paulengel/Sources/lock-o-motion/lib/motion/core_ext.rb" => [
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb" => [
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
         ],
-        "/Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb" => [
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb" => [
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
         ],
         "/Users/paulengel/Sources/just_awesome/.lotion.rb" => [
@@ -123,9 +125,11 @@ A fragment of the generated `.lotion.rb` looks like this:
         ]
       }
       IGNORED_REQUIRES = []
+      USER_MOCKS = "/Users/paulengel/Sources/just_awesome/mocks"
+      GEM_MOCKS = "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/lock-o-motion/mocks"
       LOAD_PATHS = [
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib",
-        "/Users/paulengel/Sources/lock-o-motion/lib",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib",
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib",
         "/Library/RubyMotion/lib",
 
@@ -169,7 +173,7 @@ You will get the following console output:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
-       Compile /Users/paulengel/Sources/lock-o-motion/lib/motion/lotion.rb
+       Compile /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb
        Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
@@ -273,7 +277,7 @@ As opposed to not having the `HTTParty` to our availability:
     source "http://rubygems.org"
 
     # RubyMotion aware gems
-    gem "lock-o-motion", :path => "/Users/paulengel/Sources/lock-o-motion"
+    gem "lock-o-motion", :path => "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0"
 
     # RubyMotion unaware gems
     group :lotion do

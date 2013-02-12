@@ -1,5 +1,5 @@
 = LockOMotion CHANGELOG
 
-== Version 0.1.0 (February xx, 2013)
+== Version 0.1.0 (February 12, 2013)
 
 * Initial release
