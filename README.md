@@ -26,7 +26,7 @@ A possible strategy is to "mock" common Ruby gems (e.g. `yaml` or [HTTParty](htt
 
 ### Set up your `Gemfile` and `Rakefile`
 
-You need to setup your `Gemfile` by separating RubyMotion aware Ruby gems from the ones that are not. Put the RubyMotion *unaware* gems in the `:lotion` (short for LockOMotion of course) Bundler group like this:
+You need to setup your `Gemfile` by separating RubyMotion aware Ruby gems from the ones that are not. Put the RubyMotion **unaware** gems in the `:lotion` (short for LockOMotion of course) Bundler group like this:
 
     source "http://rubygems.org"
 
@@ -153,6 +153,8 @@ Using the same `Gemfile` as in the previous example. The console output would lo
                /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
     (main) >
 
+**EDIT**: Actually, using `class_eval` and such with strings is not possible within RubyMotion applications. **Passing blocks is**.
+
 You will need to solve this yourself e.g. by overriding the method for instance or by refactoring.
 
 #### Runtime requirements
@@ -270,9 +272,9 @@ The output will be as follows:
 
 LockOMotion is able to mock some of the `HTTParty` core methods (GET, POST, PUT, DELETE requests and HTTP Basic Authentication). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore when it comes to using the gem within a RubyMotion application.
 
-As opposed to not having the `HTTParty` to our availability:
+As opposed to not having the `HTTParty` mock to our availability:
 
-##### Gemfile
+**Gemfile**
 
     source "http://rubygems.org"
 
@@ -284,7 +286,14 @@ As opposed to not having the `HTTParty` to our availability:
       gem "httparty"
     end
 
-##### Console output
+**Fragment of a defined UIViewController for instance**
+
+    def viewDidLoad
+      super
+      puts HTTParty.get("https://github.com/archan937/lock-o-motion").parsed_response
+    end
+
+**Console output**
 
     1.9.3 paulengel:just_awesome $ rake
        Warning Could not resolve dependency "socket.so"
@@ -309,7 +318,7 @@ As opposed to not having the `HTTParty` to our availability:
     2013-02-11 01:06:52.671 Just Awesome[95675:c07] lotion.rb:17:in `require:': cannot load such file -- pathname.so (LoadError)
       from core_ext.rb:29:in `require:'
 
-We are able to leave the `Gemfile` as is and get a console output like this:
+When we do have the `HTTParty` mock to our availability, we can just leave the code as is and get a console output like this:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
