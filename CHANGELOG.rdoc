@@ -1,5 +1,9 @@
 = LockOMotion CHANGELOG
 
+== Version 0.1.1 (February 13, 2013)
+
+* Being able to resolve absolute file paths at runtime only based on a file name
+
 == Version 0.1.0 (February 12, 2013)
 
 * Initial release

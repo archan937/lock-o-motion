@@ -85,39 +85,51 @@ Let us say your `Gemfile` looks like the following:
 
     # RubyMotion unawared gems
     group :lotion do
-      gem "slot_machine"
+      gem "mab"
     end
 
 A fragment of the generated `.lotion.rb` looks like this:
 
     module Lotion
       FILES = [
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/core_ext.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/lotion.rb",
         "/Users/paulengel/Sources/just_awesome/.lotion.rb",
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/slot.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/version.rb",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/time_slot.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/builder.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/indentation.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/version.rb",
+        "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi.rb",
+        "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/cookie.rb",
+        "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/core.rb",
+        "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/util.rb",
         "./app/app_delegate.rb",
         "./app/controllers/awesome_controller.rb"
       ]
       DEPENDENCIES = {
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine.rb" => [
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb",
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab.rb" => [
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/core_ext.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/lotion.rb",
           "/Users/paulengel/Sources/just_awesome/.lotion.rb",
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/slot.rb",
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot_machine/version.rb",
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb",
-          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/time_slot.rb"
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/version.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/indentation.rb",
+          "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/builder.rb"
         ],
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/core_ext.rb" => [
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb" => [
+          "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi.rb"
+        ],
+        "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi.rb" => [
+          "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/core.rb",
+          "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/cookie.rb",
+          "/Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/cgi/util.rb"
+        ],
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/core_ext.rb" => [
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
         ],
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb" => [
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/motion/lotion.rb" => [
           "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib/colorize.rb"
         ],
         "/Users/paulengel/Sources/just_awesome/.lotion.rb" => [
@@ -126,20 +138,20 @@ A fragment of the generated `.lotion.rb` looks like this:
       }
       IGNORED_REQUIRES = []
       USER_MOCKS = "/Users/paulengel/Sources/just_awesome/mocks"
-      GEM_MOCKS = "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/lock-o-motion/mocks"
+      GEM_MOCKS = "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/lock-o-motion/mocks"
       LOAD_PATHS = [
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib",
-        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib",
+        "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib",
         "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/colorize-0.5.8/lib",
         "/Library/RubyMotion/lib",
 
 ### Warnings at runtime
 
-As said before, you are not able to require sources at runtime and you cannot use "dynamic code execution" like `class_eval` or `instance_eval`. LockOMotion warns you about these kind of statements.
+As said before, you are not able to require sources at runtime and you cannot do "dynamic code execution" using `class_eval` or `instance_eval` with string interpolation (passing blocks is possible though). LockOMotion warns you about these kind of statements.
 
 #### Restricted method calls
 
-Using the same `Gemfile` as in the previous example. The console output would look something like this:
+Using the previous `Gemfile`, as Mab uses `class_eval` with string interpolation. The console output would look something like this:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
@@ -147,13 +159,19 @@ Using the same `Gemfile` as in the previous example. The console output would lo
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
       Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
-       Warning Called `Slot.class_eval` from
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
-       Warning Called `TimeSlot.class_eval` from
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
-    (main) >
-
-**EDIT**: Actually, using `class_eval` and such with strings is not possible within RubyMotion applications. **Passing blocks is**.
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/mab-0.0.2/lib/mab/mixin.rb:201
+       Warning Called `Mab::Mixin::HTML5.class_eval` from
 
 You will need to solve this yourself e.g. by overriding the method for instance or by refactoring.
 
@@ -175,37 +193,36 @@ You will get the following console output:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
-       Compile /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0/lib/motion/lotion.rb
        Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
       Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
-    (main)> 2013-02-10 18:27:40.813 Just Awesome[73896:c07] lotion.rb:17:in `require:': cannot load such file -- oj (LoadError)
-      from core_ext.rb:29:in `require:'
-      from multi_json.rb:33:in `block in default_adapter'
-      from multi_json.rb:31:in `default_adapter'
-      from multi_json.rb:49:in `adapter'
-      from multi_json.rb:108:in `current_adapter:'
-      from multi_json.rb:94:in `load:'
-      from awesome_controller.rb:11:in `viewDidLoad'
-      from app_delegate.rb:13:in `application:didFinishLaunchingWithOptions:'
-       Warning Called `require "yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+    2013-02-13 01:10:53.584 Just Awesome[57808:c07] lotion.rb:17:in `require:': cannot load such file -- oj (LoadError)
+      from core_ext.rb:39:in `require:'
+      from multi_json.rb:38:in `block in default_adapter'
+      from multi_json.rb:36:in `default_adapter'
+      from multi_json.rb:85:in `load_adapter:'
+      from multi_json.rb:73:in `use:'
+      from multi_json.rb:55:in `adapter'
+      from multi_json.rb:114:in `current_adapter:'
+      from multi_json.rb:100:in `load:'
+       Warning Called `require "yajl"` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.6.0/lib/multi_json.rb:38
                Add within Lotion.setup block: app.require "yajl"
-       Warning Called `require "multi_json/adapters/yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+       Warning Called `require "multi_json/adapters/yajl"` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.6.0/lib/multi_json.rb:82
                Add within Lotion.setup block: app.require "multi_json/adapters/yajl"
-    2013-02-10 18:27:40.981 Just Awesome[73896:c07] multi_json.rb:75:in `load_adapter:': uninitialized constant MultiJson::Adapters (NameError)
-      from multi_json.rb:65:in `use:'
-      from multi_json.rb:49:in `adapter'
+    2013-02-13 01:10:53.728 Just Awesome[57808:c07] multi_json.rb:83:in `load_adapter:': uninitialized constant MultiJson::Adapters (NameError)
+      from multi_json.rb:85:in `load_adapter:'
+      from multi_json.rb:73:in `use:'
 
 When applicable, you will get a warning about it. Here is the fragment of the warning:
 
-       Warning Called `require "yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:33
+       Warning Called `require "yajl"` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.6.0/lib/multi_json.rb:38
                Add within Lotion.setup block: app.require "yajl"
-       Warning Called `require "multi_json/adapters/yajl"` from /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.5.0/lib/multi_json.rb:74
+       Warning Called `require "multi_json/adapters/yajl"` from
+               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.6.0/lib/multi_json.rb:82
                Add within Lotion.setup block: app.require "multi_json/adapters/yajl"
 
 The following section contains further information about how to correct this.
@@ -228,12 +245,14 @@ As far as I know, you are not able to require `.bundle` files within a RubyMotio
                requires /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/yajl-ruby-1.1.0/lib/yajl/yajl.bundle
          Build ./build/iPhoneSimulator-6.1-Development
        Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+       Compile /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_json-1.6.0/lib/multi_json/adapters/yajl.rb
+       Compile /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/yajl-ruby-1.1.0/lib/yajl.rb
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Info.plist
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/PkgInfo
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
       Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
-    (main)> 2013-02-10 18:40:02.534 Just Awesome[74192:c07] uninitialized constant Yajl (NameError)
+    (main)> 2013-02-13 01:13:03.630 Just Awesome[57933:c07] uninitialized constant Yajl (NameError)
 
 You can to try [mocking Ruby gems](https://github.com/archan937/lock-o-motion#mocking-ruby-gems) with drop-in replacements.
 
@@ -243,27 +262,31 @@ LockOMotion provides a possibility to run Ruby code at startup. You can think of
 
 Let's say the root directory of your RubyMotion application is `/Users/paulengel/Sources/just_awesome`. Create a file at `/Users/paulengel/Sources/just_awesome/lotion.rb`.
 
-And when containing the following Ruby code:
+When containing the following Ruby code:
 
     puts "Hello, I am `lotion.rb`"
     puts SlotMachine.class
+
+Using the following `Gemfile`:
+
+    source "http://rubygems.org"
+
+    # RubyMotion awared gems
+    gem "lock-o-motion"
+
+    # RubyMotion unawared gems
+    group :lotion do
+      gem "slot_machine"
+    end
 
 The output will be as follows:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
        Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
-       Compile ./app/controllers/awesome_controller.rb
-       Compile /Users/paulengel/Sources/just_awesome/lotion.rb
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
-        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Info.plist
-        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/PkgInfo
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
       Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
-    (main)>    Warning Called `Slot.class_eval` from
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
-       Warning Called `TimeSlot.class_eval` from
-               /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/slot_machine-0.1.0/lib/slot.rb:5
     Hello, I am `lotion.rb`
     Module
     (main)>
@@ -272,14 +295,14 @@ The output will be as follows:
 
 LockOMotion is able to mock some of the `HTTParty` core methods (GET, POST, PUT, DELETE requests and HTTP Basic Authentication). With this achievement, we are able to use several Ruby gems which have `HTTParty` as gem dependency. The dependency will not be a blocking factor anymore when it comes to using the gem within a RubyMotion application.
 
-As opposed to not having the `HTTParty` mock to our availability:
+When having the following situation:
 
 **Gemfile**
 
     source "http://rubygems.org"
 
     # RubyMotion aware gems
-    gem "lock-o-motion", :path => "/Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.0"
+    gem "lock-o-motion"
 
     # RubyMotion unaware gems
     group :lotion do
@@ -293,7 +316,7 @@ As opposed to not having the `HTTParty` mock to our availability:
       puts HTTParty.get("https://github.com/archan937/lock-o-motion").parsed_response
     end
 
-**Console output**
+As opposed to having the `HTTParty` mock to our availability. The console output would look like this:
 
     1.9.3 paulengel:just_awesome $ rake
        Warning Could not resolve dependency "socket.so"
@@ -304,9 +327,9 @@ As opposed to not having the `HTTParty` mock to our availability:
        Warning Skipped 'openssl' requirement
        Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/httparty-0.10.1/lib/httparty.rb
                requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/zlib.bundle
-       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.2/lib/multi_xml.rb
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.3/lib/multi_xml.rb
                requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/bigdecimal.bundle
-       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.2/lib/multi_xml.rb
+       Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/multi_xml-0.5.3/lib/multi_xml.rb
                requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/stringio.bundle
        Warning /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/httparty-0.10.1/lib/httparty/net_digest_auth.rb
                requires /Users/paulengel/.rvm/rubies/ruby-1.9.3-p374/lib/ruby/1.9.1/x86_64-darwin12.2.1/digest/md5.bundle
@@ -315,14 +338,15 @@ As opposed to not having the `HTTParty` mock to our availability:
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
       Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
-    2013-02-11 01:06:52.671 Just Awesome[95675:c07] lotion.rb:17:in `require:': cannot load such file -- pathname.so (LoadError)
-      from core_ext.rb:29:in `require:'
+    (main)> 2013-02-13 01:21:39.888 Just Awesome[59028:c07] lotion.rb:17:in `require:': cannot load such file -- pathname.so (LoadError)
+      from core_ext.rb:39:in `require:'
 
 When we do have the `HTTParty` mock to our availability, we can just leave the code as is and get a console output like this:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
        Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+       Compile /Users/paulengel/.rvm/gems/ruby-1.9.3-p374/gems/lock-o-motion-0.1.1/lib/lock-o-motion/mocks/httparty.rb
        Compile ./app/controllers/awesome_controller.rb
           Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
         Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
@@ -338,6 +362,13 @@ When we do have the `HTTParty` mock to our availability, we can just leave the c
             <title>archan937/lock-o-motion · GitHub</title>
         <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub" />
         <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub" />
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144.png" />
+        <link rel="logo" type="image/svg" href="http://github-media-downloads.s3.amazonaws.com/github-logo.svg" />
+        <meta name="msapplication-TileImage"
+    (main)>
 
 I am planning on writing more "mocks" for common Ruby gems. But aside from mocks being defined within the LockOMotion gem sources, you can also define your own mocks within your RubyMotion application. Just add a directory called `mocks` within the root directory of the application and put the "mock sources" in it. The relative path of the mock source within that directory ensures a certain Ruby gem being mocked at compile time.
 
