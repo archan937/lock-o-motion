@@ -316,6 +316,8 @@ When having the following situation:
       puts HTTParty.get("https://github.com/archan937/lock-o-motion").parsed_response
     end
 
+#### Without mocking
+
 As opposed to having the `HTTParty` mock to our availability. The console output would look like this:
 
     1.9.3 paulengel:just_awesome $ rake
@@ -341,7 +343,9 @@ As opposed to having the `HTTParty` mock to our availability. The console output
     (main)> 2013-02-13 01:21:39.888 Just Awesome[59028:c07] lotion.rb:17:in `require:': cannot load such file -- pathname.so (LoadError)
       from core_ext.rb:39:in `require:'
 
-When we do have the `HTTParty` mock to our availability, we can just leave the code as is and get a console output like this:
+#### With mocking
+
+When we do have the `HTTParty` mock available, we can just leave the code as is and get a console output like this:
 
     1.9.3 paulengel:just_awesome $ rake
          Build ./build/iPhoneSimulator-6.1-Development
@@ -369,6 +373,68 @@ When we do have the `HTTParty` mock to our availability, we can just leave the c
         <link rel="logo" type="image/svg" href="http://github-media-downloads.s3.amazonaws.com/github-logo.svg" />
         <meta name="msapplication-TileImage"
     (main)>
+
+#### So what's the point?
+
+Maybe you are thinking why someone would do something like this. Well, after having mocked `HTTParty`, I now am able to use the [betty_resource](https://github.com/bettyblocks/betty_resource/tree/edge) gem for instance. At first, I could not use the `betty_resource` gem because it has `HTTParty` as gem dependency but since that problem is eliminated, I can.
+
+As an example:
+
+**Gemfile**
+
+    source "http://rubygems.org"
+
+    # RubyMotion aware gems
+    gem "lock-o-motion"
+
+    # RubyMotion unaware gems
+    group :lotion do
+      gem "betty_resource", :path => "/Users/paulengel/Sources/betty_resource"
+    end
+
+**Fragment of a defined UIViewController for instance**
+
+    def viewDidLoad
+      super
+      puts HTTParty.get("https://github.com/archan937/lock-o-motion").parsed_response[0, 1000]
+      puts BettyResource::Api.get("/models/2c449a396a6a46159cd5f256622fd75f/records/1").parsed_response
+      puts BettyResource::Relation.get(1).inspect
+      puts BettyResource::Relation.get(1).first_name
+    end
+
+When running the application:
+
+    1.9.3 paulengel:just_awesome $ rake
+         Build ./build/iPhoneSimulator-6.1-Development
+       Compile /Users/paulengel/Sources/just_awesome/.lotion.rb
+          Link ./build/iPhoneSimulator-6.1-Development/Just Awesome.app/Just Awesome
+        Create ./build/iPhoneSimulator-6.1-Development/Just Awesome.dSYM
+      Simulate ./build/iPhoneSimulator-6.1-Development/Just Awesome.app
+    (main)>
+
+
+    <!DOCTYPE html>
+    <html>
+      <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# githubog: http://ogp.me/ns/fb/githubog#">
+        <meta charset='utf-8'>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <title>archan937/lock-o-motion · GitHub</title>
+        <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub" />
+        <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub" />
+        <link rel="apple-touch-icon-precomposed" sizes="57x57" href="apple-touch-icon-114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-144.png" />
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144.png" />
+        <link rel="logo" type="image/svg" href="http://github-media-downloads.s3.amazonaws.com/github-logo.svg" />
+        <meta name="msapplication-TileImage"
+    {"last_name"=>"Willemse", "first_name"=>"Daniel", "id"=>1}
+    #<BettyResource::Relation @id=1 @last_name=<not loaded> @first_name=<not loaded>>
+    Daniel
+    (main)>
+
+When you are only using gems which are maintained by yourself, you would not have to mock its dependencies of course. But you do when dealing with third party gems.
+
+#### Creating mocks
 
 I am planning on writing more "mocks" for common Ruby gems. But aside from mocks being defined within the LockOMotion gem sources, you can also define your own mocks within your RubyMotion application. Just add a directory called `mocks` within the root directory of the application and put the "mock sources" in it. The relative path of the mock source within that directory ensures a certain Ruby gem being mocked at compile time.
 
