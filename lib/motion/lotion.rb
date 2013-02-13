@@ -24,7 +24,7 @@ module Lotion
         args.first
       else
         object, method, caller = *args
-        "Called `#{object}.#{method}` from\n#{derive_caller(caller)}"
+        "Called `#{object}.#{method}` from\n#{derive_caller(caller, false)}"
       end
     end
     puts "   Warning #{message.gsub("\n", "\n           ")}".yellow
@@ -32,17 +32,32 @@ module Lotion
 
 private
 
-  def derive_caller(caller)
-    return "<unknown path>" if caller.empty?
-    file, line = *caller[0].match(/^(.*\.rb):(\d+)/).captures
-    "#{resolve file}:#{line}"
+  def derive_caller(caller, identical = true)
+    if caller.empty?
+      "<unknown path>"
+    else
+      file, line = *caller[0].match(/^(.*\.rb):(\d+)/).captures
+      resolved = resolve file, identical
+      case resolved
+      when String
+        "#{resolved}:#{line}"
+      when Array
+        if resolved.size == 1
+          "#{resolved[0]}:#{line}"
+        else
+          "either " + resolved.collect{|x| "#{x}:#{line}"}.join("\n    or ")
+        end
+      else
+        "#{file || caller[0].match(/^(.*\.\w+):/).captures[0]}:#{line}"
+      end
+    end
   end
 
   def required
     @required ||= []
   end
 
-  def resolve(path)
+  def resolve(path, identical = true)
     if path.match /^\//
       path
     else
@@ -53,7 +68,9 @@ private
           return (absolute_path if absolute_path.match(/\.rb$/))
         end
       end
-      nil
+      if !identical && path.match(/\.rb$/) && !(matches = (FILES + REQUIRED).uniq.select{|file| file.match(/\/#{path}$/)}).empty?
+        matches
+      end
     end
   end
 
