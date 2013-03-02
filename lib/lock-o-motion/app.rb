@@ -65,6 +65,7 @@ module LockOMotion
       Bundler.require :lotion
       require "colorize", true
       yield self if block_given?
+      require File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)
 
       Kernel.instance_eval &unhook
       Object.class_eval &unhook
@@ -85,8 +86,6 @@ module LockOMotion
       end
 
       @files = (default_files + gem_lotion.sort + bundler.sort + (@dependencies.keys + @dependencies.values).flatten.sort + user_lotion.sort + @app.files).uniq
-      @files << File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)
-
       @app.files = @files
       @app.files_dependencies @dependencies
       write_lotion
