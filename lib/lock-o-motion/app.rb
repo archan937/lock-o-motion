@@ -43,6 +43,7 @@ module LockOMotion
         register_dependency call, path
       else
         puts "   Warning Could not resolve dependency \"#{path}\"".red
+        raise LoadError, "cannot load such file -- #{path}"
       end
     end
 
