@@ -32,6 +32,10 @@ module LockOMotion
     end
   end
 
+  def mocks_dirs
+    @mocks_dirs ||= [USER_MOCKS, GEM_MOCKS]
+  end
+
   def gem_paths
     @gem_paths ||= Dir["{#{::Gem.paths.path.join(",")}}" + "/gems/*"].inject({}) do |gem_paths, path|
       gem_path = GemPath.new path
@@ -43,6 +47,10 @@ module LockOMotion
     end.sort
   end
 
+  def add_mocks_dir(dir)
+    mocks_dirs.insert 1, dir
+  end
+
   def skip?(path)
     !!%w(openssl pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
       puts "   Warning Skipped '#{file}' requirement".yellow if file
@@ -51,11 +59,14 @@ module LockOMotion
 
   def mock_path(path)
     path = path.gsub(/\.rb$/, "")
-    if File.exists?("#{USER_MOCKS}/#{path}.rb")
-      File.expand_path "./mocks/#{path}.rb"
-    elsif File.exists?("#{GEM_MOCKS}/#{path}.rb")
-      "lock-o-motion/mocks/#{path}"
+
+    mocks_dirs.each do |dir|
+      if File.exists?(file = File.expand_path("#{dir}/#{path}.rb"))
+        return file
+      end
     end
+
+    nil
   end
 
 end

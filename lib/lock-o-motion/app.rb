@@ -140,8 +140,7 @@ module LockOMotion
             FILES = #{pretty_inspect @files, 2}
             DEPENDENCIES = #{pretty_inspect @dependencies, 2}
             IGNORED_REQUIRES = #{pretty_inspect @ignored_requires, 2}
-            USER_MOCKS = #{pretty_inspect USER_MOCKS, 2}
-            GEM_MOCKS = #{pretty_inspect GEM_MOCKS, 2}
+            MOCKS_DIRS = #{pretty_inspect LockOMotion.mocks_dirs, 2}
             LOAD_PATHS = #{pretty_inspect $:, 2}
             GEM_PATHS = #{pretty_inspect LockOMotion.gem_paths, 2}
             REQUIRED = #{pretty_inspect $", 2}
