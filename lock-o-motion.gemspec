@@ -12,7 +12,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.name          = "lock-o-motion"
   gem.require_paths = ["lib"]
-  gem.version       = "0.1.1"
+  gem.version       = "0.1.2"
 
   gem.add_dependency "colorize"
 end
