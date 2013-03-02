@@ -103,12 +103,18 @@ module LockOMotion
             Thread.current[:lotion_app].dependency $1, path, internal
           end
           begin
-            require_without_catch path
-          rescue LoadError
-            if gem_path = LockOMotion.gem_paths.detect{|x| File.exists? "#{x}/#{path}"}
-              $:.unshift gem_path
+            verbose = $VERBOSE
+            $VERBOSE = nil if mock_path
+            begin
               require_without_catch path
+            rescue LoadError
+              if gem_path = LockOMotion.gem_paths.detect{|x| File.exists? "#{x}/#{path}"}
+                $:.unshift gem_path
+                require_without_catch path
+              end
             end
+          ensure
+            $VERBOSE = verbose
           end
         end
         alias :require_without_catch :require
