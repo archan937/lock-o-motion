@@ -53,7 +53,7 @@ module LockOMotion
 
   def skip?(path)
     !!%w(openssl pry).detect{|x| path.match %r{\b#{x}\b}}.tap do |file|
-      puts "   Warning Skipped '#{file}' requirement".yellow if file
+      warn "Skipped '#{file}' requirement" if file
     end
   end
 
@@ -67,6 +67,10 @@ module LockOMotion
     end
 
     nil
+  end
+
+  def warn(message, color = :yellow)
+    puts "   Warning #{message.gsub("\n", "\n           ")}".send(color)
   end
 
 end

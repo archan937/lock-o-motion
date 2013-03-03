@@ -33,7 +33,7 @@ module LockOMotion
             register_dependency call, absolute_path
             $:.unshift load_path unless $:.include?(load_path)
           else
-            puts "   Warning #{call}\n           requires #{absolute_path}".red
+            LockOMotion.warn "#{call}\nrequires #{absolute_path}", :red
           end
           return
         end
@@ -42,7 +42,7 @@ module LockOMotion
       if path.match(/^\//) && File.exists?(path)
         register_dependency call, path
       else
-        puts "   Warning Could not resolve dependency \"#{path}\"".red
+        LockOMotion.warn "Could not resolve dependency \"#{path}\"\nrequired from #{call}", :red
         raise LoadError, "cannot load such file -- #{path}"
       end
     end
