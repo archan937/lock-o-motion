@@ -455,6 +455,11 @@ At the moment, you will have to find a replacement yourself.
 
 With LockOMotion, I have tried to lower the threshold for using more Ruby gems within RubyMotion applications. Contributions are very much welcome. Please spread the word about `LockOMotion` when you like it! ^^
 
+## Roadmap
+
+* Support requiring static libraries / C extensions (e.g. `BigDecimal`)
+* Support requiring [Parslet](https://github.com/kschiess/parslet)
+
 ## Contact me
 
 For support, remarks and requests, please mail me at [paul.engel@holder.nl](mailto:paul.engel@holder.nl).
