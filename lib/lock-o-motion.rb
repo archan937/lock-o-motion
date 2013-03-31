@@ -7,8 +7,11 @@ require "lock-o-motion/version"
 module LockOMotion
   extend self
 
-  USER_MOCKS = File.expand_path("./mocks")
-  GEM_MOCKS  = File.expand_path("../lock-o-motion/mocks", __FILE__)
+  USER_MOCKS  = File.expand_path("./mocks")
+  GEM_MOCKS   = File.expand_path("../lock-o-motion/mocks", __FILE__)
+
+  USER_LOTION =  "lotion.rb"
+  GEM_LOTION  = ".lotion.rb"
 
   class GemPath
     attr_reader :name, :version, :path, :version_numbers
@@ -36,6 +39,14 @@ module LockOMotion
     @mocks_dirs ||= [USER_MOCKS, GEM_MOCKS]
   end
 
+  def default_files
+    @default_files ||= [
+      [File.expand_path("../motion/core_ext.rb", __FILE__), false],
+      [File.expand_path("../motion/lotion.rb", __FILE__), false],
+      [File.expand_path(GEM_LOTION), false]
+    ]
+  end
+
   def gem_paths
     @gem_paths ||= Dir["{#{::Gem.paths.path.join(",")}}" + "/gems/*"].inject({}) do |gem_paths, path|
       gem_path = GemPath.new path
@@ -45,6 +56,10 @@ module LockOMotion
     end.values.collect do |gem_path|
       gem_path.path + "/lib"
     end.sort
+  end
+
+  def add_default_file(file, hook = true)
+    default_files.push [file, hook]
   end
 
   def add_mocks_dir(dir)

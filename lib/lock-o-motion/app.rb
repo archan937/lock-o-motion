@@ -1,9 +1,6 @@
 module LockOMotion
   class App
 
-    GEM_LOTION  = ".lotion.rb"
-    USER_LOTION =  "lotion.rb"
-
     def self.setup(app, &block)
       new(app).send :setup, &block
     end
@@ -64,6 +61,9 @@ module LockOMotion
 
       Bundler.require :lotion
       require "colorize", true
+      LockOMotion.default_files.select{|x| x.last}.each do |default_file|
+        require default_file.first
+      end
       yield self if block_given?
       require File.expand_path(USER_LOTION) if File.exists?(USER_LOTION)
 
@@ -74,6 +74,7 @@ module LockOMotion
       bundler = @dependencies.delete("BUNDLER") || []
       gem_lotion = @dependencies.delete("GEM_LOTION") || []
       user_lotion = @dependencies.delete("USER_LOTION") || []
+      default_files = LockOMotion.default_files.select{|x| !x.last}.collect(&:first)
 
       gem_lotion.each do |file|
         default_files.each do |default_file|
@@ -130,12 +131,6 @@ module LockOMotion
       end
     end
 
-    def default_files
-      @default_files ||= [
-        File.expand_path("../../motion/core_ext.rb", __FILE__),
-        File.expand_path("../../motion/lotion.rb", __FILE__),
-        File.expand_path(GEM_LOTION)
-      ]
     end
 
     def write_lotion
