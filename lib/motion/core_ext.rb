@@ -36,7 +36,7 @@ end
 
 class Object
   def require(*args, &block)
-    Lotion.require args.first, caller
+    Lotion.require args.first
   end
   alias :original_instance_eval :instance_eval
   def instance_eval(*args, &block)
