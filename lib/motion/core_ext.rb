@@ -41,7 +41,7 @@ class Object
   alias :original_instance_eval :instance_eval
   def instance_eval(*args, &block)
     if block_given?
-      instance_eval &block
+      original_instance_eval &block
     else
       Lotion.warn self.class.name, :instance_eval, caller
     end
