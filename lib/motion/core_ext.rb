@@ -21,6 +21,9 @@ class Module
       Lotion.warn name, :module_eval, caller
     end
   end
+  def autoload(*args, &block)
+    Lotion.warn name, :autoload, caller
+  end
 end
 
 class Class
