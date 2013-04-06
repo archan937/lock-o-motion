@@ -1,6 +1,6 @@
 require "colorize"
-require "motion/gem_ext"
 
+require "lock-o-motion/gem_ext"
 require "lock-o-motion/app"
 require "lock-o-motion/version"
 
