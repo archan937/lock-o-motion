@@ -3,6 +3,7 @@ require "lock-o-motion/app/writer"
 
 module LockOMotion
   class App
+
     include Hooks
     include Writer
 
@@ -31,7 +32,7 @@ module LockOMotion
       hook do
         Bundler.require :lotion
         require "colorize", true
-        LockOMotion.default_files.select{|x| x.last}.each do |default_file|
+        LockOMotion.default_files.select{|x| x[1]}.each do |default_file|
           require default_file.first
         end
         yield self if block_given?
@@ -41,8 +42,13 @@ module LockOMotion
       bundler = @dependencies.delete("BUNDLER") || []
       gem_lotion = @dependencies.delete("GEM_LOTION") || []
       user_lotion = @dependencies.delete("USER_LOTION") || []
-      default_files = LockOMotion.default_files.select{|x| !x.last}.collect(&:first)
+      default_files = LockOMotion.default_files.reject{|x| x[1]}.collect(&:first)
 
+      LockOMotion.default_files.each do |file, internal, dependencies|
+        (dependencies || []).each do |dependency|
+          (@dependencies[file] ||= []) << dependency
+        end
+      end
       gem_lotion.each do |file|
         default_files.each do |default_file|
           (@dependencies[default_file] ||= []) << file
@@ -53,7 +59,7 @@ module LockOMotion
         @dependencies[file] = default_files + @dependencies[file]
       end
 
-      @files = (default_files + gem_lotion.sort + bundler.sort + (@dependencies.keys + @dependencies.values).flatten.sort + user_lotion.sort + @app.files).uniq
+      @files = (LockOMotion.default_files.collect(&:first) + gem_lotion.sort + bundler.sort + (@dependencies.keys + @dependencies.values).flatten.sort + user_lotion.sort + @app.files).uniq
       @app.files = @files
       @app.files_dependencies @dependencies
       write_lotion

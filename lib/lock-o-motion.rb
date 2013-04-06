@@ -41,7 +41,7 @@ module LockOMotion
 
   def default_files
     @default_files ||= [
-      [File.expand_path("../motion/core_ext.rb", __FILE__), false],
+      [File.expand_path("../motion/core_ext.rb", __FILE__), false, [File.expand_path("../motion/lotion.rb", __FILE__)]],
       [File.expand_path("../motion/lotion.rb", __FILE__), false],
       [File.expand_path(GEM_LOTION), false]
     ]
