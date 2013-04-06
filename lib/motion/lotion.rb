@@ -1,15 +1,15 @@
 module Lotion
   extend self
 
-  def require(path, caller)
-    return if required.include? path
-    required << path
+  def require(path, _caller = nil)
+    return if required[path]
+    required[path] = true
 
     if absolute_path = resolve(path)
       unless (IGNORED_REQUIRES + REQUIRED).include?(absolute_path)
         warn [
           "Called `require \"#{path}\"` from",
-          derive_caller(caller),
+          _caller ? derive_caller(_caller) : '(unspecified)',
           "Add within Lotion.setup block: ".yellow + "app.require \"#{path}\"".green
         ].join("\n")
       end
@@ -54,14 +54,18 @@ private
   end
 
   def required
-    @required ||= []
+    @required ||= {}
+  end
+
+  def resolve_paths
+    @resolve_paths ||= MOCKS_DIRS + LOAD_PATHS + GEM_PATHS
   end
 
   def resolve(path, identical = true)
     if path.match /^\//
       path
     else
-      (MOCKS_DIRS + LOAD_PATHS + GEM_PATHS).each do |load_path|
+      (resolve_paths).each do |load_path|
         if File.exists?(absolute_path = "#{load_path}/#{path}.bundle") ||
            File.exists?(absolute_path = "#{load_path}/#{path}.rb") ||
            File.exists?(absolute_path = "#{load_path}/#{path}")
