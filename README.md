@@ -1,5 +1,7 @@
 # LockOMotion
 
+**Note: LockOMotion has been rewritten as [MotionBundler](https://github.com/archan937/motion-bundler). You should use that instead of LockOMotion.**
+
 Require and mock Ruby gems (including their dependencies) within RubyMotion applications
 
 ## Introduction
